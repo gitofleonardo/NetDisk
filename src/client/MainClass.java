@@ -53,6 +53,7 @@ public class MainClass extends JFrame {
 	private JMenuItem refreshItem;
 	private JMenuItem renameItem;
 	private JMenu jMenu;
+	private JLabel pathJLabel;
 	public MainClass(Socket socket,String ID,String Passwd){
 		this.socket=socket;
 		this.ID=ID;
@@ -69,6 +70,7 @@ public class MainClass extends JFrame {
 				getNewInfo();
 			}
 		});
+		pathJLabel=new JLabel();
 		jMenu=new JMenu("TODO");
 		renameItem=new JMenuItem("Rename");
 		renameItem.addActionListener(new RenameListener());
@@ -102,6 +104,7 @@ public class MainClass extends JFrame {
 		//初始化界面
 		jScrollPane=new JScrollPane(fileJList);
 		this.add(jMenuBar,BorderLayout.NORTH);
+		this.add(pathJLabel,BorderLayout.SOUTH);
 		this.add(jScrollPane);
 		this.setTitle("User:"+ID);
 		this.setSize(400, 600);
@@ -158,6 +161,7 @@ public class MainClass extends JFrame {
 						//等待客户端接收
 						//载入当前目录
 						loadFileList(msg);
+						pathJLabel.setText(currentDir);
 						break;
 					/**case CommandClass._COMMAND_DOWN_START:
 						String[] msgs=msg.split("&");
