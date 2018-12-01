@@ -51,6 +51,7 @@ public class MainClass extends JFrame {
 	private JMenuItem uploadItem;
 	private JMenuItem downloadItem;
 	private JMenuItem refreshItem;
+	private JMenuItem renameItem;
 	private JMenu jMenu;
 	public MainClass(Socket socket,String ID,String Passwd){
 		this.socket=socket;
@@ -69,6 +70,8 @@ public class MainClass extends JFrame {
 			}
 		});
 		jMenu=new JMenu("TODO");
+		renameItem=new JMenuItem("Rename");
+		renameItem.addActionListener(new RenameListener());
 		uploadItem=new JMenuItem("Upload");
 		uploadItem.addActionListener(new UploadListener());
 		downloadItem=new JMenuItem("DownLoad");
@@ -89,6 +92,7 @@ public class MainClass extends JFrame {
 		jMenu.add(delDirItem);
 		jMenu.add(downloadItem);
 		jMenu.add(uploadItem);
+		jMenu.add(renameItem);
 		jMenu.add(jItem1);
 		jMenuBar.add(jMenu);
 		user=new User(ID, Passwd);
@@ -360,6 +364,10 @@ public class MainClass extends JFrame {
 						SelectedDir="";
 					}
 				}
+			}else if (arg0.getClickCount()==1){
+				if (fileJList.getSelectedValue()!=null){
+					SelectedDir=fileJList.getSelectedValue().toString();
+				}
 			}
 		}
 
@@ -519,6 +527,46 @@ public class MainClass extends JFrame {
 						jDialog.dispose();
 					}
 				});
+				jDialog.setLocationRelativeTo(null);
+				jDialog.setVisible(true);
+			}
+		}
+		
+	}
+	private class RenameListener implements ActionListener{
+		JButton conformButton;
+		JDialog jDialog;
+		JTextField jTextField;
+		JLabel hintJLabel;
+		JPanel jPanel;
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO 自动生成的方法存根
+			if (!SelectedDir.equals("")){
+				conformButton=new JButton("Conform");
+				conformButton.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						// TODO 自动生成的方法存根
+						if (!jTextField.getText().equals("") && !SelectedDir.equals("")){
+							ps.println(CommandClass._COMMAND_RENAME+"&"+currentDir+SelectedDir+"&"+currentDir+jTextField.getText()+"&");
+							ps.flush();
+							getDirs(currentDir);
+							jDialog.dispose();
+						}
+					}
+				});
+				hintJLabel=new JLabel("New Name:");
+				jTextField=new JTextField(10);
+				jDialog=new JDialog();
+				jPanel=new JPanel();
+				jPanel.add(hintJLabel,BorderLayout.WEST);
+				jPanel.add(jTextField);
+				jPanel.add(conformButton);
+				jDialog.add(jPanel);
+				jDialog.setSize(100,130);
+				jDialog.setModal(true);
 				jDialog.setLocationRelativeTo(null);
 				jDialog.setVisible(true);
 			}
