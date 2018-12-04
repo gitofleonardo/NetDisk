@@ -32,9 +32,9 @@ public class TransThread implements Runnable {
 			
 			//接收客户请求
 			ServerSocket ss=new ServerSocket(PORT);
-			ps.println(CommandClass._COMMAND_DOWN_START+"&"+filenameString+"&");
+			ps.println(CommandClass._COMMAND_DOWN_START+"&"+filenameString+"&"+file.length()+"&");
 			ps.flush();
-			System.out.println("Server:"+CommandClass._COMMAND_DOWN_START+"&"+filenameString+"&");
+			System.out.println("Server:"+CommandClass._COMMAND_DOWN_START+"&"+filenameString+"&"+file.length()+"&");
 			
 			Socket socket=ss.accept();
 

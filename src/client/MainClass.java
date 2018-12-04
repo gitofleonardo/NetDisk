@@ -54,6 +54,8 @@ public class MainClass extends JFrame {
 	private JMenuItem renameItem;
 	private JMenu jMenu;
 	private JLabel pathJLabel;
+	private String downloadSize;
+	
 	public MainClass(Socket socket,String ID,String Passwd){
 		this.socket=socket;
 		this.ID=ID;
@@ -163,10 +165,10 @@ public class MainClass extends JFrame {
 						loadFileList(msg);
 						pathJLabel.setText(currentDir);
 						break;
-					/**case CommandClass._COMMAND_DOWN_START:
+					case CommandClass._COMMAND_DOWN_START:
 						String[] msgs=msg.split("&");
-						System.out.println("DownloadTo:D:\\"+msgs[1]);
-						break;*/
+						downloadSize=msgs[2];
+						break;
 						
 					default:
 						break;
@@ -230,11 +232,11 @@ public class MainClass extends JFrame {
 		ps.println(CommandClass._COMMAND_RENAME+"&"+currentDir+OldDirName+"&"+currentDir+NewDirName+"&");
 		ps.flush();
 	}
-	private void download(String fileName){
-		ps.println(CommandClass._COMMAND_DOWNFILE+"&"+currentDir+fileName+"&");
-		ps.flush();
-		Thread thread=new Thread(new DownloadThread("D:\\",fileName,"127.0.0.1"));
-		thread.start();
+	private void download(String fileName,String fileLength){
+		//ps.println(CommandClass._COMMAND_DOWNFILE+"&"+currentDir+fileName+"&");
+		//ps.flush();
+		//Thread thread=new Thread(new DownloadThread("D:\\",fileName,"127.0.0.1",fileLength));
+		//thread.start();
 	}
 	private void getNewInfo(){
 		ps.println(CommandClass._COMMAND_USERINFO);
@@ -526,7 +528,7 @@ public class MainClass extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						// TODO 自动生成的方法存根
-						Thread thread=new Thread(new DownloadThread(jTextField.getText(),fileName.getText(),"localhost"));
+						Thread thread=new Thread(new DownloadThread(jTextField.getText(),fileName.getText(),"localhost",downloadSize));
 						thread.start();
 						jDialog.dispose();
 					}

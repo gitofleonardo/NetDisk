@@ -179,6 +179,12 @@ public class UserProcThread implements Runnable {
 			    Thread.sleep(500);
 			}catch(Exception e){
 				e.printStackTrace();
+				try {
+					socket.close();
+				} catch (IOException e1) {
+					// TODO 自动生成的 catch 块
+					e1.printStackTrace();
+				}
 				break;
 			}
 		}

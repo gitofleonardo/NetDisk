@@ -7,16 +7,36 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.Socket;
 
+import javax.swing.JDialog;
+import javax.swing.JProgressBar;
+
 public class DownloadThread implements Runnable {
 	//从客户端下载文件
+	private JDialog jDialog;
+	private JProgressBar progressBar;
 	private File file;
 	private String IPAddr;
 	private int PORT=8856;
 	private String path;
 	private Socket socket;
 	private boolean done=false;
-	public DownloadThread(String filePath,String FileName,String IPAddr){
+	private long fileSize;
+	private long downloadedDize;
+	private int percent;
+	
+	public DownloadThread(String filePath,String FileName,String IPAddr,String size){
 		//要传输到的文件夹绝对路径
+		downloadedDize=0;
+		jDialog = new JDialog();
+		jDialog.setTitle("Downloading...");
+		jDialog.setLocationRelativeTo(null);
+		jDialog.setSize(200,100);
+		jDialog.setResizable(false);
+		progressBar=new JProgressBar();
+		progressBar.setMaximum(100);
+		progressBar.setStringPainted(true);
+		jDialog.add(progressBar);
+		this.fileSize=Long.parseLong(size);
 		this.path=filePath;
 		this.IPAddr=IPAddr;
 		file = new File(path+FileName);
@@ -56,12 +76,21 @@ public class DownloadThread implements Runnable {
 			//存储字节到缓冲区
 			byte[] buffer=new byte[2048];
 			int num=dis.read(buffer);
+			jDialog.setVisible(true);
+			downloadedDize+=num;
+			percent=(int)((100*downloadedDize)/fileSize);
+			progressBar.setValue(percent);
 			while (num!=-1){
 				raf.write(buffer,0,num);
 				raf.skipBytes(num);
 				num=dis.read(buffer);
-				System.out.println("Downloading..."+num);
+				downloadedDize+=num;
+				//System.out.println("Downloading..."+downloadedDize);
+				System.out.println(percent);
+				percent=(int)((100*downloadedDize)/fileSize);
+				progressBar.setValue(percent);
 			}
+			progressBar.setValue(100);
 			dis.close();
 			raf.close();
 			socket.close();
